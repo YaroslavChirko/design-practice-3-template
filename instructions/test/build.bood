@@ -1,6 +1,5 @@
 go_binary {
   name: "server",
-  // TODO: Відкорегуйте ім'я пакета.
   pkg: "github.com/YaroslavChirko/design-practice-3-template/cmd/server",
   test: "github.com/YaroslavChirko/design-practice-3-template/cmd/server",
   srcs: [
@@ -11,16 +10,14 @@ go_binary {
 }
 
 go_binary {
-  name: "lb",
-  // TODO: Відкорегуйте ім'я пакета.
+  name: "integration",
   pkg: "github.com/YaroslavChirko/design-practice-3-template/cmd/lb",
-  test: "github.com/YaroslavChirko/design-practice-3-template/integration",
+  test: "github.com/YaroslavChirko/design-practice-3-template/integration -check.b",
   srcs: [
     "httptools/**/*.go",
     "signal/**/*.go",
     "cmd/lb/*.go"
   ]
-  // TODO: Додайте запуск тестів для балансувальника.
 }
 
-// TODO: Додайте модуль для інтеграційних тестів.
+// for using benchmark -check.b flag is used, so this test doesn`t write to the file
