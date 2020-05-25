@@ -35,7 +35,7 @@ func (s *MySuite) TestBalancer(c *C) {
 		m[resp.Header.Get("lb-from")] +=1
 	}
 	
-	c.Assert(m["server1:8080"],Equals,0)
+	c.Assert(m["server1:8080"],Equals,3)
 	c.Assert(m["server2:8080"],Equals,3)
 	c.Assert(m["server3:8080"],Equals,3)
 }
