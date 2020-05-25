@@ -14,7 +14,6 @@ var client = http.Client{
 	Timeout: 3 * time.Second,
 }
 
-
 func Test(t *testing.T) { TestingT(t) }
 type MySuite struct{}
 
@@ -30,8 +29,7 @@ func (s *MySuite) TestBalancer(c *C) {
 		if err != nil {
 			c.Error(err)
 		}
-		fmt.Printf("response from [%s]", resp.Header.Get("lb-from"))
-		c.Logf("response from [%s]", resp.Header.Get("lb-from"))
+		c.Logf("response from %s", resp.Header.Get("lb-from"))
 		m[resp.Header.Get("lb-from")] +=1
 	}
 	
@@ -40,6 +38,12 @@ func (s *MySuite) TestBalancer(c *C) {
 	c.Assert(m["server3:8080"],Equals,3)
 }
 
-func BenchmarkBalancer(b *testing.B) {
-	// TODO: Реалізуйте інтеграційний бенчмарк для балансувальникка.
+func (s *MySuite)BenchmarkBalancer(c *C) {
+	for i:=0;i<c.N;i++{
+	_, err := client.Get(fmt.Sprintf("%s/api/v1/some-data", baseAddress))
+	if err != nil {
+			c.Error(err)
+		}
+	}
+	
 }
