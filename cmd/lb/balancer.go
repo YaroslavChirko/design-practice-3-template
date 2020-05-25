@@ -116,11 +116,29 @@ var hiTraffic int =math.MaxInt32
 	return index,nil;
 }
 
+//dummy for test purpouses to verify getServer work
+func getServerMoc (t [3] int, h [3] bool) (int, error){
+index:=-1
+var hiTraffic int =math.MaxInt32
+	 
+	for i := 0;i<3;i++ {
+		if(h[i]&&t[i]<=hiTraffic){
+			index = i
+			hiTraffic=t[i]
+		}
+	}
+	if(index==-1){
+		return -1,errors.New("No healthy servers")
+	}
+	return index,nil;
+}
+
 func main() {
 	var err error = nil
 	index := -1;
 	flag.Parse()
 
+	// TODO: Використовуйте дані про стан сервреа, щоб підтримувати список тих серверів, яким можна відправляти ззапит.
 	for _, server := range serversPool {
 		server := server
 		go func() {
