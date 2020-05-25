@@ -15,7 +15,7 @@ var client = http.Client{
 }
 
 
-
+func Test(t *testing.T) { TestingT(t) }
 type MySuite struct{}
 
 var _ = Suite(&MySuite{})
