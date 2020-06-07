@@ -42,7 +42,7 @@ func (s *MySuite) TestBalancer(c *C) {
 
 func (s *MySuite)BenchmarkBalancer(c *C) {
 	for i:=0;i<c.N;i++{
-	_, err2 := client.Get(fmt.Sprintf("%s/api/v1/some-data", baseAddress))
+	_, err2 := client.Get(fmt.Sprintf("%s/api/v1/some-data", *target))
 	if err2 != nil {
 			c.Error(err2)
 		}
