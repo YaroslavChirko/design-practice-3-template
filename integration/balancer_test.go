@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
+	"flag"
 	."gopkg.in/check.v1"
 	"time"
 )
 
 const baseAddress = "http://balancer:8090"
+var target = flag.String("target", "http://localhost:8090", "request target")
 
 var client = http.Client{
 	Timeout: 3 * time.Second,
@@ -25,7 +27,7 @@ func (s *MySuite) TestBalancer(c *C) {
 	m["server2:8080"]=0
 	m["server3:8080"]=0
 	for i:=0;i<9;i++{
-		resp, err := client.Get(fmt.Sprintf("%s/api/v1/some-data", baseAddress))
+		resp, err := client.Get(fmt.Sprintf("%s/api/v1/some-data", *target))
 		if err != nil {
 			c.Error(err)
 		}
@@ -40,9 +42,9 @@ func (s *MySuite) TestBalancer(c *C) {
 
 func (s *MySuite)BenchmarkBalancer(c *C) {
 	for i:=0;i<c.N;i++{
-	_, err := client.Get(fmt.Sprintf("%s/api/v1/some-data", baseAddress))
-	if err != nil {
-			c.Error(err)
+	_, err2 := client.Get(fmt.Sprintf("%s/api/v1/some-data", baseAddress))
+	if err2 != nil {
+			c.Error(err2)
 		}
 	}
 	
