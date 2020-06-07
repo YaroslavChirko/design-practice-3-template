@@ -12,7 +12,7 @@ go_binary {
 go_binary {
   name: "integration",
   pkg: "github.com/YaroslavChirko/design-practice-3-template/cmd/lb",
-  test: "github.com/YaroslavChirko/design-practice-3-template/integration",
+  test: "github.com/YaroslavChirko/design-practice-3-template/integration> ./out/report/integration.txt -check.b",
   srcs: [
     "httptools/**/*.go",
     "signal/**/*.go",
