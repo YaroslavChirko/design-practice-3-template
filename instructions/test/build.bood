@@ -1,11 +1,9 @@
 go_binary {
   name: "integration",
-  
   pkg: "github.com/YaroslavChirko/design-practice-3-template/integration",
   test: "-check.b github.com/YaroslavChirko/design-practice-3-template/integration",
   srcs: [
-    "integration/*_test.go",
+    "integration/*_test.go"
   ]
 }
-
 // for using benchmark -check.b flag is used, so this test doesn`t write to the file
