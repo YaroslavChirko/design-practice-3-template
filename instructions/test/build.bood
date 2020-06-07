@@ -1,7 +1,7 @@
 go_binary {
   name: "integration",
   pkg: "github.com/YaroslavChirko/design-practice-3-template/integration",
-  test: " -check.b github.com/YaroslavChirko/design-practice-3-template/integration",
+  test: "github.com/YaroslavChirko/design-practice-3-template/integration  -check.b",
   srcs: [
     "integration/*_test.go"
   ]
