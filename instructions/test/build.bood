@@ -1,22 +1,10 @@
 go_binary {
-  name: "server",
-  pkg: "github.com/YaroslavChirko/design-practice-3-template/cmd/server",
-  test: "github.com/YaroslavChirko/design-practice-3-template/cmd/server",
-  srcs: [
-    "httptools/**/*.go",
-    "signal/**/*.go",
-    "cmd/server/*.go"
-  ]
-}
-
-go_binary {
   name: "integration",
-  pkg: "github.com/YaroslavChirko/design-practice-3-template/cmd/lb",
-  test: "github.com/YaroslavChirko/design-practice-3-template/integration> ./out/report/integration.txt -check.b",
+  
+  pkg: "github.com/YaroslavChirko/design-practice-3-template/integration",
+  test: "-check.b github.com/YaroslavChirko/design-practice-3-template/integration",
   srcs: [
-    "httptools/**/*.go",
-    "signal/**/*.go",
-    "cmd/lb/*.go"
+    "integration/*_test.go",
   ]
 }
 
