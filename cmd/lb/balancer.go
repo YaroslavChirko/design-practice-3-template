@@ -9,9 +9,7 @@ import (
 	"net/http"
 	"time"
 	"math"
-	"strconv"
 	"errors"
-	"bytes"
 	"github.com/YaroslavChirko/design-practice-3-template/httptools"
 	"github.com/YaroslavChirko/design-practice-3-template/signal"
 )
@@ -30,6 +28,12 @@ var (
 		"server1:8080",
 		"server2:8080",
 		"server3:8080",
+	}
+	
+	serversT = []int64{
+		0,
+		0,
+		0,
 	}
 )
 
@@ -55,19 +59,8 @@ func health(dst string) bool {
 	return true
 }
 
-func traffic(dst string) int {
-	ctx, _ := context.WithTimeout(context.Background(), timeout)
-	req, _ := http.NewRequestWithContext(ctx, "GET",
-		fmt.Sprintf("%s://%s/traffic", scheme(), dst), nil)
-	resp, _ := http.DefaultClient.Do(req)
-	rspBuf  := new(bytes.Buffer)
-	rspBuf.ReadFrom(resp.Body)
-	strRsp := string(rspBuf.Bytes())
-	intRsp,_ := strconv.Atoi(strRsp)
-	return intRsp
-}
 
-func forward(dst string, rw http.ResponseWriter, r *http.Request) error {
+func forward(frm int,dst string, rw http.ResponseWriter, r *http.Request) error {
 	ctx, _ := context.WithTimeout(r.Context(), timeout)
 	fwdRequest := r.Clone(ctx)
 	fwdRequest.RequestURI = ""
@@ -88,7 +81,8 @@ func forward(dst string, rw http.ResponseWriter, r *http.Request) error {
 		log.Println("fwd", resp.StatusCode, resp.Request.URL)
 		rw.WriteHeader(resp.StatusCode)
 		defer resp.Body.Close()
-		_, err := io.Copy(rw, resp.Body)
+		bs, err := io.Copy(rw, resp.Body)
+		serversT[frm] += bs
 		if err != nil {
 			log.Printf("Failed to write response: %s", err)
 		}
@@ -101,13 +95,12 @@ func forward(dst string, rw http.ResponseWriter, r *http.Request) error {
 }
 
 func getServer (index int) (int, error){
-var hiTraffic int =math.MaxInt32
+var hiTraffic int64 =math.MaxInt64
 	 
 	for i := 0;i<3;i++ {
-	trafficTmp := traffic(serversPool[i])
-		if(health(serversPool[i])&&trafficTmp<=hiTraffic){
+		if(health(serversPool[i])&&serversT[i]<=hiTraffic){
 			index = i
-			hiTraffic=trafficTmp
+			hiTraffic=serversT[i]
 		}
 	}
 	if(index==-1){
@@ -147,6 +140,13 @@ func main() {
 			}
 		}()
 	}
+		go func() {
+			for range time.Tick(time.Hour) {
+				serversT[0] =0
+				serversT[1] =0
+				serversT[2] =0
+			}
+		}()
 	
 		
 	frontend := httptools.CreateServer(*port, http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
@@ -156,7 +156,7 @@ func main() {
 			rw.WriteHeader(http.StatusInternalServerError)
 			rw.Write([]byte(err.Error()))
 		}else{
-		forward(serversPool[index], rw, r)
+		forward(index,serversPool[index], rw, r)
 		}
 		
 		index = -1
